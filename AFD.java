@@ -39,7 +39,9 @@ public class AFD {
      * @return final state of string
      */
     private String final_state(char q, String w, String[][] d) {
+        char value = w.charAt(w.length() - 1);
 
+        return transition(q, value, d);
     }
 
     /*
