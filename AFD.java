@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AFD {
 
@@ -41,7 +42,7 @@ public class AFD {
      * d --> list of transitions
      * @return final state of string
      */
-    private String final_state(char q, String w, String[][] d) {
+    private String final_state(String q, String w, String[][] d) {
         char value = w.charAt(w.length() - 1);
 
         return transition(String.valueOf(q), value, d);
@@ -81,7 +82,7 @@ public class AFD {
      * d --> list of transitions
      */
     public Boolean accepted(String q, String w, String[] F, String[][] d){
-
+        return Arrays.asList(F).contains(final_state(q, w, d));
     }
 
 }
