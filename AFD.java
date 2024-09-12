@@ -1,3 +1,6 @@
+
+import java.util.ArrayList;
+
 public class AFD {
 
     String[] states;
@@ -22,7 +25,7 @@ public class AFD {
      * d --> list of transitions
      * @return transition's value
     */
-    private String transition(char q, char a, String[][] d) {
+    private String transition(String q, char a, String[][] d) {
         String transited_state = "";
         for (String[] d1 : d) {
             if (d1[0].equals(q) && d1[1].equals(a)) {
@@ -41,7 +44,7 @@ public class AFD {
     private String final_state(char q, String w, String[][] d) {
         char value = w.charAt(w.length() - 1);
 
-        return transition(q, value, d);
+        return transition(String.valueOf(q), value, d);
     }
 
     /*
@@ -50,8 +53,25 @@ public class AFD {
      * d --> list of transitions
      * @return secuence of states
      */
-    public String derivation(String q, String w, String[][] d) {
+    public ArrayList<ArrayList<String>> derivation(String q, String w, String[][] d) {
+        String state = q;
+        ArrayList<ArrayList<String>> transitions = new ArrayList<>();
 
+        for (int i = 0; i < w.length(); i++) {
+            if (w.charAt(i) != ' ') {
+                ArrayList<String> actualT = new ArrayList<>();
+                actualT.add(state);
+                actualT.add(String.valueOf(w.charAt(i)));
+
+                state = transition(state, w.charAt(i), d);
+                actualT.add(state);
+
+                transitions.add(actualT);
+            }
+            
+        }
+
+        return transitions;
     }
 
     /*
