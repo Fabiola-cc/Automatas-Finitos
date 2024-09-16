@@ -90,7 +90,7 @@ public class AFD {
         return Arrays.asList(F).contains(final_state(q, w, d));
     }
 
-    public void minimize() {
+    public AFD minimize() {
         //Convert transitions into HashMap<String, HashMap<String, String>>
         HashMap<String, HashMap<String, String>> transitionMap = new HashMap<>();
 
@@ -274,7 +274,16 @@ public class AFD {
             }
         }
 
-        String f = "";
+        // Convert ArrayList<String> to String[]
+        String[] newStatesArray = newStates.toArray(new String[0]);
+
+        // Convert ArrayList<String> to String[]
+        String[] newAcceptanceStatesArray = newAcceptanceStates.toArray(new String[0]);
+
+        // Convert ArrayList<String[]> to String[][]
+        String[][] newTransitionsArray = newTransitions.toArray(new String[newTransitions.size()][]);
+
+        return new AFD(newStatesArray, alphabet, newInitialState, newAcceptanceStatesArray, newTransitionsArray);
     }
     
 
