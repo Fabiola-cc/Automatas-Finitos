@@ -28,10 +28,12 @@ class Node {
 //Aristas in Grafo
 class Arista {
     Node origin, destiny;
+    String label;
 
-    public Arista(Node origin, Node destiny) {
+    public Arista(Node origin, Node destiny, String label) {
         this.origin = origin;
         this.destiny = destiny;
+        this.label = label;
     }
 }
 
@@ -43,8 +45,8 @@ class GraphPanel extends JPanel {
         nodes.add(node);
     }
 
-    public void addArista(Node origin, Node destiny) {
-        aristas.add(new Arista(origin, destiny));
+    public void addArista(Node origin, Node destiny, String label) {
+        aristas.add(new Arista(origin, destiny, label));
     }
 
     private void drawNode(Graphics2D g2d, Node node) {
@@ -90,6 +92,7 @@ class GraphPanel extends JPanel {
         //Draw aristas
         for (Arista arista : aristas) {
             g2d.drawLine(arista.origin.x, arista.origin.y, arista.destiny.x, arista.destiny.y);
+            g2d.drawString(arista.label, (arista.origin.x + arista.destiny.x + 10) / 2, (arista.origin.y + arista.destiny.y) / 2);
         }
 
         //Draw nodes
@@ -116,9 +119,9 @@ public class Grafo extends JFrame {
         panel.addNode(nodeC);
 
         // Create aristas
-        panel.addArista(nodeA, nodeB);
-        panel.addArista(nodeB, nodeC);
-        panel.addArista(nodeA, nodeC);
+        panel.addArista(nodeA, nodeB, "a");
+        panel.addArista(nodeB, nodeC, "a");
+        panel.addArista(nodeA, nodeC, "c");
 
         //Configure window
         this.add(panel);
