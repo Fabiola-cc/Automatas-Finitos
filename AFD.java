@@ -298,10 +298,4 @@ public class AFD {
         difference.removeAll(F);
         return difference;
     }
-
-    public void createGraph(String[] states, String[][] transitions) {
-
-        // mxGraph graph = new mxGraph();
-    }
-
 }
