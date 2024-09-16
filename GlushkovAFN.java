@@ -110,6 +110,8 @@ public class GlushkovAFN {
         Stack<List<Integer>> stack = new Stack<>();
         List<Integer> currentOperands = new ArrayList<>();
         List<Integer> previousOperands = null;
+        boolean flag = false; // If recently closed parenthesis
+        boolean lastoperand = false; // If lastly was an operand
         int operand = 0;
 
         for (int i = 0; i < regex.length(); i++) {
@@ -119,34 +121,54 @@ public class GlushkovAFN {
                     // Guardar el estado actual de operandos
                     stack.push(new ArrayList<>(currentOperands));
                     currentOperands.clear();
+                    lastoperand = false;
                     break;
                 case ')':
                     // Combinar con los operandos dentro de paréntesis
                     previousOperands = stack.pop();
                     combinePairs(languageF, previousOperands, currentOperands);
+                    flag = true;
+                    lastoperand = false;
                     break;
                 case '*':
+                    // Añadir las transiciones debido a *
+                    if (!currentOperands.isEmpty()) {
+                        int lastOperand = currentOperands.get(currentOperands.size() - 1);
+                        languageF.add(lastOperand + "" + lastOperand);
+                    }
+                    lastoperand = false;
+                    break;
                 case '+':
                     // Añadir las transiciones debido a +
                     if (!currentOperands.isEmpty()) {
                         int lastOperand = currentOperands.get(currentOperands.size() - 1);
                         languageF.add(lastOperand + "" + lastOperand);
                     }
+                    lastoperand = false;
                     break;
                 case '|':
                     // Guardar los operandos de un lado del | y vaciar para los siguientes
                     stack.push(new ArrayList<>(currentOperands));
-                    currentOperands.clear();
+                    lastoperand = false;
                     break;
                 default:
                     if (Character.isLetterOrDigit(c)) {
                         if (!currentOperands.isEmpty()) {
-                            int lastOperand = currentOperands.get(currentOperands.size() - 1);
-                            languageF.add(lastOperand + "" + operand);
+                            for (int lastOperand : currentOperands) {
+                                languageF.add(lastOperand + "" + operand);
+                            }
+                        }
+                        if (flag) {
+                            currentOperands.clear();
+                            flag = false;
+                        }
+                        if (lastoperand) {
+                            currentOperands.clear();
                         }
                         currentOperands.add(operand);
                         operand++;
                     }
+                    lastoperand = true;
                     break;
             }
         }
@@ -169,21 +191,21 @@ public class GlushkovAFN {
     }
 
     // Método para construir el AFD desde una expresión regular
-    public static void regexToDFA(String regex) {
+    public static Object[] regexToDFA(String regex) {
         // Listado de símbolos
         List<Character> operandos = extractOperands(regex);
         int total_operandos = operandos.size();
 
         // Construir el árbol sintáctico y calcular P, D, F
         Set<Integer> P = extractP(regex); // índices de operandos iniciales
-        Set<Integer> D = extractD(regex, total_operandos); // índices de operandos finales
+        Set<Integer> D = extractD(regex, total_operandos - 1); // índices de operandos finales
         Set<String> F = extractF(regex);
 
         // Listado de estados
         List<Character> states = new ArrayList<>();
         states.add('s');
         for (int i = 0; i < total_operandos; i++) {
-            states.add((char) i);
+            states.add((char) ('0' + i));
         }
 
         // Listado de entradas
@@ -234,12 +256,23 @@ public class GlushkovAFN {
             actualState++;
         }
 
-        System.out.println("\nfinal states:\t" + D);
+        System.out.println("\nAll states:\t" + states);
+        System.out.println("final states:\t" + D);
+        System.out.println("inputs:\t" + inputs_array);
+
+        // RETORNAR estados, entradas, matriz de transiciones, estados finales
+        return new Object[] { states, inputs_array, transitions, D };
     }
 
     public static void main(String[] args) {
         // Ejemplo de expresión regular
-        String regex = "(a|b)*ab(b|a)*"; // preguntar por caso (a+|b)*, caso doble parentesis
+        String regex = "(a|b)*aab(a|b)+"; // preguntar por caso (a+|b)*, caso doble parentesis
         regexToDFA(regex);
+
+        // Object[] reception = regexToDFA(regex);
+        // for (Object object : reception) {
+        // System.out.println();
+        // System.out.println(object);
+        // }
     }
 }
