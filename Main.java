@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
@@ -25,15 +24,16 @@ public class Main {
         };
 
         AFD afd = new AFD(states, alphabet, initial_state, acceptance_states, transitions);
-        AFD afdMinimizado = afd.minimize();
+        // AFD afdMinimizado = afd.minimize();
+        afd.minimize();
 
-        System.out.println("Estados del AFD minimizado: " + Arrays.toString(afdMinimizado.states));
-        System.out.println("Estados de aceptación del AFD minimizado: " + Arrays.toString(afdMinimizado.acceptance_states));
-        System.out.println("Transiciones del AFD minimizado:");
-        for (String[] trans : afdMinimizado.transitions) {
-            if (trans != null) {
-                System.out.println(Arrays.toString(trans));
-            }
-        }
+        // System.out.println("Estados del AFD minimizado: " + Arrays.toString(afdMinimizado.states));
+        // System.out.println("Estados de aceptación del AFD minimizado: " + Arrays.toString(afdMinimizado.acceptance_states));
+        // System.out.println("Transiciones del AFD minimizado:");
+        // for (String[] trans : afdMinimizado.transitions) {
+        //     if (trans != null) {
+        //         System.out.println(Arrays.toString(trans));
+        //     }
+        // }
     }
 }
