@@ -1,3 +1,5 @@
+package Glushkov;
+
 import java.util.*;
 
 public class GlushkovAFN {
@@ -256,23 +258,11 @@ public class GlushkovAFN {
             actualState++;
         }
 
-        System.out.println("\nAll states:\t" + states);
+        System.out.println("\n\nAll states:\t" + states);
         System.out.println("final states:\t" + D);
         System.out.println("inputs:\t" + inputs_array);
 
         // RETORNAR estados, entradas, matriz de transiciones, estados finales
         return new Object[] { states, inputs_array, transitions, D };
-    }
-
-    public static void main(String[] args) {
-        // Ejemplo de expresión regular
-        String regex = "(a|b)*aab(a|b)+"; // preguntar por caso (a+|b)*, caso doble parentesis
-        regexToDFA(regex);
-
-        // Object[] reception = regexToDFA(regex);
-        // for (Object object : reception) {
-        // System.out.println();
-        // System.out.println(object);
-        // }
     }
 }
