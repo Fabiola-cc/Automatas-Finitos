@@ -104,26 +104,175 @@ public class GlushkovAFN {
         return D;
     }
 
+    // Función para obtener el lenguaje F (parejas de números)
+    public static Set<String> extractF(String regex) {
+        Set<String> languageF = new HashSet<>();
+        Stack<List<Integer>> stack = new Stack<>();
+        List<Integer> currentOperands = new ArrayList<>();
+        List<Integer> previousOperands = null;
+        boolean flag = false; // If recently closed parenthesis
+        boolean lastoperand = false; // If lastly was an operand
+        int operand = 0;
+
+        for (int i = 0; i < regex.length(); i++) {
+            char c = regex.charAt(i);
+            switch (c) {
+                case '(':
+                    // Guardar el estado actual de operandos
+                    stack.push(new ArrayList<>(currentOperands));
+                    currentOperands.clear();
+                    lastoperand = false;
+                    break;
+                case ')':
+                    // Combinar con los operandos dentro de paréntesis
+                    previousOperands = stack.pop();
+                    combinePairs(languageF, previousOperands, currentOperands);
+                    flag = true;
+                    lastoperand = false;
+                    break;
+                case '*':
+                    // Añadir las transiciones debido a *
+                    if (!currentOperands.isEmpty()) {
+                        int lastOperand = currentOperands.get(currentOperands.size() - 1);
+                        languageF.add(lastOperand + "" + lastOperand);
+                    }
+                    lastoperand = false;
+                    break;
+                case '+':
+                    // Añadir las transiciones debido a +
+                    if (!currentOperands.isEmpty()) {
+                        int lastOperand = currentOperands.get(currentOperands.size() - 1);
+                        languageF.add(lastOperand + "" + lastOperand);
+                    }
+                    lastoperand = false;
+                    break;
+                case '|':
+                    // Guardar los operandos de un lado del | y vaciar para los siguientes
+                    stack.push(new ArrayList<>(currentOperands));
+                    lastoperand = false;
+                    break;
+                default:
+                    if (Character.isLetterOrDigit(c)) {
+                        if (!currentOperands.isEmpty()) {
+                            for (int lastOperand : currentOperands) {
+                                languageF.add(lastOperand + "" + operand);
+                            }
+                        }
+                        if (flag) {
+                            currentOperands.clear();
+                            flag = false;
+                        }
+                        if (lastoperand) {
+                            currentOperands.clear();
+                        }
+                        currentOperands.add(operand);
+                        operand++;
+                    }
+                    lastoperand = true;
+                    break;
+            }
+        }
+
+        // Combinar al final si todavía hay operandos en el stack
+        if (!stack.isEmpty()) {
+            previousOperands = stack.pop();
+            combinePairs(languageF, previousOperands, currentOperands);
+        }
+
+        return languageF;
+    }
+
+    private static void combinePairs(Set<String> languageF, List<Integer> first, List<Integer> second) {
+        for (int f : first) {
+            for (int s : second) {
+                languageF.add(f + "" + s);
+            }
+        }
+    }
+
     // Método para construir el AFD desde una expresión regular
-    public static void regexToDFA(String regex) {
+    public static Object[] regexToDFA(String regex) {
         // Listado de símbolos
         List<Character> operandos = extractOperands(regex);
         int total_operandos = operandos.size();
 
         // Construir el árbol sintáctico y calcular P, D, F
         Set<Integer> P = extractP(regex); // índices de operandos iniciales
-        Set<Integer> D = extractD(regex, total_operandos); // índices de operandos finales
-        List<String> F[];
+        Set<Integer> D = extractD(regex, total_operandos - 1); // índices de operandos finales
+        Set<String> F = extractF(regex);
 
+        // Listado de estados
+        List<Character> states = new ArrayList<>();
+        states.add('s');
+        for (int i = 0; i < total_operandos; i++) {
+            states.add((char) ('0' + i));
+        }
+
+        // Listado de entradas
+        Set<Character> inputs = new HashSet<>(operandos);
+        List<Character> inputs_array = new ArrayList<>(inputs);
+
+        // Matriz de transiciones
+        String[][] transitions = new String[states.size()][inputs.size()];
+        // Transiciones iniciales
+        for (Integer state : P) {
+            char input = operandos.get(state);
+            int input_position = inputs_array.indexOf(input);
+            if (transitions[0][input_position] == null) {
+                transitions[0][input_position] = ""; // Inicializa con cadena vacía si es null
+            }
+            transitions[0][input_position] += state.toString();
+        }
+
+        // Transiciones intermedias
+        for (String pair : F) {
+            int position = Character.getNumericValue(pair.charAt(0));
+            Integer state = Character.getNumericValue(pair.charAt(1));
+            char input = operandos.get(state);
+            int input_position = inputs_array.indexOf(input);
+            if (transitions[position + 1][input_position] == null) {
+                transitions[position + 1][input_position] = ""; // Inicializa con cadena vacía si es null
+            }
+            transitions[position + 1][input_position] += state.toString();
+        }
+
+        // Impresión de matriz
+        System.out.print("state\t");
+        for (char input : inputs_array) {
+            System.out.print(input + "\t");
+        }
+
+        int actualState = 0;
+        System.out.print("\nS\t");
+        for (String string : transitions[0]) {
+            System.out.print(string + "\t");
+        }
+
+        for (int i = 1; i < transitions.length; i++) {
+            System.out.print("\n" + actualState + "\t");
+            for (String string : transitions[i]) {
+                System.out.print(string + "\t");
+            }
+            actualState++;
+        }
+
+        System.out.println("\nAll states:\t" + states);
+        System.out.println("final states:\t" + D);
+        System.out.println("inputs:\t" + inputs_array);
+
+        // RETORNAR estados, entradas, matriz de transiciones, estados finales
+        return new Object[] { states, inputs_array, transitions, D };
     }
 
     public static void main(String[] args) {
         // Ejemplo de expresión regular
-        String regex = "(a|b)+ab(b|a)*"; // preguntar por caso (a+|b)*
+        String regex = "(a|b)*aab(a|b)+"; // preguntar por caso (a+|b)*, caso doble parentesis
+        regexToDFA(regex);
 
-        Set<Integer> P = extractP(regex);
-        Set<Integer> D = extractD(regex, 5);
-        System.out.println(P);
-        System.out.println(D);
+        // Object[] reception = regexToDFA(regex);
+        // for (Object object : reception) {
+        // System.out.println();
+        // System.out.println(object);
+        // }
     }
 }
