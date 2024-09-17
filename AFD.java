@@ -23,6 +23,26 @@ public class AFD {
         this.transitions = transitions;
     }
 
+    public String[] getStates() {
+        return this.states;
+    }
+
+    public String[] getAlphabet() {
+        return this.alphabet;
+    }
+
+    public String getInitialState() {
+        return this.initial_state;
+    }
+
+    public String[] getAcceptanceStates() {
+        return this.acceptance_states;
+    }
+
+    public String[][] getTransitions() {
+        return this.transitions;
+    }
+
 
 
     /*

@@ -103,25 +103,18 @@ class GraphPanel extends JPanel {
 }
 
 public class Grafo extends JFrame {
-    public Grafo() {
+    public Grafo(String[] states, String initial_state, String[] acceptance_states, String[][] transitions) {
         GraphPanel panel = new GraphPanel();
 
-        // Create nodes
-        Node nodeA = new Node(100,100, 50,"A", Color.BLACK);
-        Node subNodeA = new Node(100,100, 40,"A", Color.BLACK);
-        Node nodeB = new Node(200,300, 50, "B", Color.BLACK);
-        Node nodeC = new Node(300,100, 5, "C", Color.BLACK);
-        
-        //Add nodes into panel
-        panel.addNode(nodeA);
-        panel.addNode(subNodeA);
-        panel.addNode(nodeB);
-        panel.addNode(nodeC);
+        ArrayList<Node> nodeStates = new ArrayList<>();
 
-        // Create aristas
-        panel.addArista(nodeA, nodeB, "a");
-        panel.addArista(nodeB, nodeC, "a");
-        panel.addArista(nodeA, nodeC, "c");
+        for (String q : states) {
+            Node node = new Node(100, 100, 40, q, Color.BLACK);
+            panel.addNode(node);
+            nodeStates.add(node);
+        } 
+
+
 
         //Configure window
         this.add(panel);
