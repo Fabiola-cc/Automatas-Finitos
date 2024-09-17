@@ -104,8 +104,19 @@ class GraphPanel extends JPanel {
 
         // Dibuja aristas
         for (Arista arista : aristas) {
-            g2d.drawLine(arista.origin.x, arista.origin.y, arista.destiny.x, arista.destiny.y);
-            g2d.drawString(arista.label, (arista.origin.x + arista.destiny.x + 10) / 2, (arista.origin.y + arista.destiny.y) / 2);
+
+            if (arista.origin.x == arista.destiny.x && arista.origin.y == arista.destiny.y) {
+                int radius = 45; // Radio del círculo
+                g2d.drawOval(arista.origin.x + 20, arista.origin.y + 20, radius, radius);
+                g2d.drawString(arista.label, arista.origin.x + 55, arista.origin.y + 20);
+            } else {
+                // Dibujar línea si origen y destino son diferentes
+                g2d.drawLine(arista.origin.x, arista.origin.y, arista.destiny.x, arista.destiny.y);
+                double factor = 0.85;
+                int labelX = (int) (arista.origin.x * factor + arista.destiny.x * (1 - factor));
+                int labelY = (int) (arista.origin.y * factor + arista.destiny.y * (1 - factor));
+                g2d.drawString(arista.label, labelX+10, labelY);
+            }            
         }
 
         // Dibuja nodos
