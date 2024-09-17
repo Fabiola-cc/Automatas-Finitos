@@ -1,3 +1,5 @@
+import Glushkov.GlushkovAFN;
+import ShuntingYard.ShuntingYardRegex;
 import java.util.*;
 
 public class RegexToAFDMain {
@@ -21,8 +23,8 @@ public class RegexToAFDMain {
 
         // Crear el AFN
         AFN afn = createAFN(states, alphabet, transitions, finalStates);
-        
         System.out.println("AFN construido.");
+        printAFNInfo(afn);
 
         // Paso 4: Convertir el AFN a AFD
         AFN.AFD afd = AFN.convertAFNtoAFD(afn);
@@ -78,6 +80,26 @@ public class RegexToAFDMain {
             System.out.println("Desde " + entry.getKey() + ":");
             for (Map.Entry<Character, Set<String>> transition : entry.getValue().entrySet()) {
                 System.out.println("  Con '" + transition.getKey() + "' va a " + transition.getValue());
+            }
+        }
+    }
+
+    private static void printAFNInfo(AFN afn) {
+        System.out.println("\nInformación del AFN resultante:");
+        System.out.println("Número de estados: " + afn.states.length);
+        System.out.println("Alfabeto: " + afn.alphabet);
+        System.out.println("Estado inicial: " + afn.initialState);
+        System.out.println("Estados de aceptación: " + afn.acceptanceStates);
+        System.out.println("\nTransiciones:");
+        for (String state : afn.states) {
+            System.out.println("Desde " + state + ":");
+            Map<Character, Set<String>> stateTransitions = afn.transitions.get(state);
+            if (stateTransitions != null) {
+                for (Map.Entry<Character, Set<String>> transition : stateTransitions.entrySet()) {
+                    System.out.println("  Con '" + transition.getKey() + "' va a " + transition.getValue());
+                }
+            } else {
+                System.out.println("  No hay transiciones definidas para este estado.");
             }
         }
     }
