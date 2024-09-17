@@ -63,6 +63,10 @@ public class Main {
 
         AFN AFN = new AFN(states, alphabet, states[0], acceptanceStates, transitions);
 
+        AFD AFD = AFN.convertAFNtoAFD(AFN);
+
+        
+
 
         for (Object object : initialAFN) {
         System.out.println();

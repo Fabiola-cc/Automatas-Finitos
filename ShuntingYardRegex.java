@@ -1,4 +1,3 @@
-package ShuntingYard;
 
 import java.util.*;
 
