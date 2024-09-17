@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -40,6 +42,7 @@ class Arista {
 class GraphPanel extends JPanel {
     List<Node> nodes = new ArrayList<>();
     List<Arista> aristas = new ArrayList<>();
+    Node initialNode; // Nodo inicial
 
     public void addNode(Node node) {
         nodes.add(node);
@@ -49,11 +52,15 @@ class GraphPanel extends JPanel {
         aristas.add(new Arista(origin, destiny, label));
     }
 
+    // Método para establecer el nodo inicial
+    public void setInitialNode(Node initialNode) {
+        this.initialNode = initialNode;
+    }
+
     private void drawNode(Graphics2D g2d, Node node) {
-        
         g2d.setColor(Color.WHITE);
         g2d.fillOval(node.x - node.radius, node.y - node.radius, node.radius * 2, node.radius * 2);
-        
+
         g2d.setColor(node.borderColor);
         g2d.setStroke(new BasicStroke(2));
         g2d.drawOval(node.x - node.radius, node.y - node.radius, node.radius * 2, node.radius * 2);
@@ -86,40 +93,74 @@ class GraphPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     
-        //Draw arrow
-        drawArrow(g2d, 10, 100, 60, 100);
+        // Dibuja la flecha al lado del nodo inicial
+        if (initialNode != null) {
+            int arrowX1 = initialNode.x - initialNode.radius - 30; // Ajusta la posición de la flecha
+            int arrowY1 = initialNode.y;
+            int arrowX2 = initialNode.x - initialNode.radius;
+            int arrowY2 = initialNode.y;
+            drawArrow(g2d, arrowX1, arrowY1, arrowX2, arrowY2);
+        }
 
-        //Draw aristas
+        // Dibuja aristas
         for (Arista arista : aristas) {
             g2d.drawLine(arista.origin.x, arista.origin.y, arista.destiny.x, arista.destiny.y);
             g2d.drawString(arista.label, (arista.origin.x + arista.destiny.x + 10) / 2, (arista.origin.y + arista.destiny.y) / 2);
         }
 
-        //Draw nodes
+        // Dibuja nodos
         for (Node node : nodes) {
             drawNode(g2d, node);
         }
     }
 }
 
+
 public class Grafo extends JFrame {
     public Grafo(String[] states, String initial_state, String[] acceptance_states, String[][] transitions) {
         GraphPanel panel = new GraphPanel();
 
-        ArrayList<Node> nodeStates = new ArrayList<>();
+        HashMap<String, Node> nodeStates = new HashMap<>();
+        Node initialNode = null; // Referencia al nodo inicial
 
-        for (String q : states) {
-            Node node = new Node(100, 100, 40, q, Color.BLACK);
+        int centerX = 600;
+        int centerY = 500;
+        int radius = 400;
+
+        int numStates = states.length;
+
+        for (int i = 0; i < numStates; i++) {
+            String q = states[i];
+
+            double angle = 2 * Math.PI * (i+2) / numStates;
+            int x = centerX + (int) (radius * Math.cos(angle));
+            int y = centerY + (int) (radius * Math.sin(angle));
+
+            Node node = new Node(x, y, 40, q, Color.BLACK);
             panel.addNode(node);
-            nodeStates.add(node);
-        } 
+            nodeStates.put(node.label, node);
+            if (Arrays.asList(acceptance_states).contains(node.label)) {
+                Node subNode = new Node(x, y, 30, q, Color.BLACK);
+                panel.addNode(subNode);
+            }
 
+            // Identificar el nodo con el estado inicial
+            if (q.equals(initial_state)) {
+                initialNode = node; // Guarda el nodo inicial
+            }
+        }
 
+        for (String[] transition : transitions) {
+            panel.addArista(nodeStates.get(transition[0]), nodeStates.get(transition[2]), transition[1]);
+        }
 
-        //Configure window
+        // Configura el nodo inicial en el panel para que dibuje la flecha
+        panel.setInitialNode(initialNode);
+
+        // Configura la ventana
         this.add(panel);
         this.setTitle("Finite Determinist Automata");
-        this.setSize(400, 400);
+        this.setSize(1200, 1000);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
     }
