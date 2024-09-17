@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class AFN {
     String[] states;
@@ -16,28 +18,11 @@ public class AFN {
         this.transitions = transitions;
     }
     
-    public static class AFD {
-        Set<Set<String>> states;
-        Set<Character> alphabet;
-        Set<String> initialState;
-        Set<Set<String>> acceptanceStates;
-        Map<Set<String>, Map<Character, Set<String>>> transitions;
-
-        // Constructor
-        public AFD(Set<Set<String>> states, Set<Character> alphabet, Set<String> initialState,
-                   Set<Set<String>> acceptanceStates, Map<Set<String>, Map<Character, Set<String>>> transitions) {
-            this.states = states;
-            this.alphabet = alphabet;
-            this.initialState = initialState;
-            this.acceptanceStates = acceptanceStates;
-            this.transitions = transitions;
-        }
-    }
 
     public static AFD convertAFNtoAFD(AFN afn) {
         Set<Set<String>> afdStates = new HashSet<>();
-        Set<Set<String>> afdAcceptanceStates = new HashSet<>();
-        Map<Set<String>, Map<Character, Set<String>>> afdTransitions = new HashMap<>();
+        Set<String> afdAcceptanceStates = new HashSet<>();
+        List<String[]> afdTransitions = new ArrayList<>();
 
         // Inicializar con el estado inicial del AFN
         Set<String> initialState = epsilonClosure(afn, new HashSet<>(Collections.singletonList(afn.initialState)));
@@ -45,28 +30,42 @@ public class AFN {
         Queue<Set<String>> queue = new LinkedList<>();
         queue.add(initialState);
 
+        Map<Set<String>, String> stateMapping = new HashMap<>();
+        AtomicInteger stateCounter = new AtomicInteger(0);
+
         while (!queue.isEmpty()) {
             Set<String> currentState = queue.poll();
+            String currentStateName = stateMapping.computeIfAbsent(currentState, 
+                k -> "q" + stateCounter.getAndIncrement());
 
             for (char symbol : afn.alphabet) {
                 Set<String> nextState = epsilonClosure(afn, move(afn, currentState, symbol));
                 if (!nextState.isEmpty()) {
+                    String nextStateName = stateMapping.computeIfAbsent(nextState, 
+                        k -> "q" + stateCounter.getAndIncrement());
                     if (!afdStates.contains(nextState)) {
                         afdStates.add(nextState);
                         queue.add(nextState);
                     }
-                    afdTransitions.computeIfAbsent(currentState, k -> new HashMap<>()).put(symbol, nextState);
+                    afdTransitions.add(new String[]{currentStateName, String.valueOf(symbol), nextStateName});
                 }
             }
 
             // Verificar si el estado actual es de aceptación
             if (!Collections.disjoint(currentState, afn.acceptanceStates)) {
-                afdAcceptanceStates.add(currentState);
+                afdAcceptanceStates.add(currentStateName);
             }
         }
 
-        return new AFD(afdStates, afn.alphabet, initialState, afdAcceptanceStates, afdTransitions);
+        String[] states = stateMapping.values().toArray(new String[0]);
+        String[] alphabet = afn.alphabet.stream().map(String::valueOf).toArray(String[]::new);
+        String initialStateName = stateMapping.get(initialState);
+        String[] acceptanceStates = afdAcceptanceStates.toArray(new String[0]);
+        String[][] transitions = afdTransitions.toArray(new String[afdTransitions.size()][]);
+
+        return new AFD(states, alphabet, initialStateName, acceptanceStates, transitions);
     }
+
 
     private static Set<String> epsilonClosure(AFN afn, Set<String> states) {
         Stack<String> stack = new Stack<>();

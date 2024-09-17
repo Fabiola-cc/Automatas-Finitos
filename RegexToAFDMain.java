@@ -1,3 +1,5 @@
+// Es solo un mini main Para corroborar el uso de clase AFN
+
 import Glushkov.GlushkovAFN;
 import ShuntingYard.ShuntingYardRegex;
 import java.util.*;
@@ -27,7 +29,7 @@ public class RegexToAFDMain {
         printAFNInfo(afn);
 
         // Paso 4: Convertir el AFN a AFD
-        AFN.AFD afd = AFN.convertAFNtoAFD(afn);
+        AFD afd = AFN.convertAFNtoAFD(afn);
         
         System.out.println("AFD construido.");
 
@@ -69,21 +71,17 @@ public class RegexToAFDMain {
         return new AFN(afnStates, afnAlphabet, initialState, afnAcceptanceStates, afnTransitions);
     }
 
-    private static void printAFDInfo(AFN.AFD afd) {
+    private static void printAFDInfo(AFD afd) {
         System.out.println("\nInformación del AFD resultante:");
-        System.out.println("Número de estados: " + afd.states.size());
-        System.out.println("Alfabeto: " + afd.alphabet);
-        System.out.println("Estado inicial: " + afd.initialState);
-        System.out.println("Estados de aceptación: " + afd.acceptanceStates);
+        System.out.println("Número de estados: " + afd.states.length);
+        System.out.println("Alfabeto: " + Arrays.toString(afd.alphabet));
+        System.out.println("Estado inicial: " + afd.initial_state);
+        System.out.println("Estados de aceptación: " + Arrays.toString(afd.acceptance_states));
         System.out.println("\nTransiciones:");
-        for (Map.Entry<Set<String>, Map<Character, Set<String>>> entry : afd.transitions.entrySet()) {
-            System.out.println("Desde " + entry.getKey() + ":");
-            for (Map.Entry<Character, Set<String>> transition : entry.getValue().entrySet()) {
-                System.out.println("  Con '" + transition.getKey() + "' va a " + transition.getValue());
-            }
+        for (String[] transition : afd.transitions) {
+            System.out.println("  Desde '" + transition[0] + "' con '" + transition[1] + "' va a '" + transition[2] + "'");
         }
     }
-
     private static void printAFNInfo(AFN afn) {
         System.out.println("\nInformación del AFN resultante:");
         System.out.println("Número de estados: " + afn.states.length);
