@@ -1,7 +1,7 @@
 // Es solo un mini main Para corroborar el uso de clase AFN
 
 import Glushkov.GlushkovAFN;
-import ShuntingYard.ShuntingYardRegex;
+
 import java.util.*;
 
 public class RegexToAFDMain {
@@ -16,7 +16,7 @@ public class RegexToAFDMain {
 
         // Paso 3: Construir el AFN utilizando el algoritmo de Glushkov
         Object[] afnComponents = GlushkovAFN.regexToDFA(regex);
-        
+
         // Extraer componentes del AFN
         List<Character> states = (List<Character>) afnComponents[0];
         List<Character> alphabet = (List<Character>) afnComponents[1];
@@ -30,15 +30,15 @@ public class RegexToAFDMain {
 
         // Paso 4: Convertir el AFN a AFD
         AFD afd = AFN.convertAFNtoAFD(afn);
-        
+
         System.out.println("AFD construido.");
 
         // Imprimir información sobre el AFD resultante
         printAFDInfo(afd);
     }
 
-    private static AFN createAFN(List<Character> states, List<Character> alphabet, 
-        String[][] transitions, Set<Integer> finalStates) {
+    private static AFN createAFN(List<Character> states, List<Character> alphabet,
+            String[][] transitions, Set<Integer> finalStates) {
         String[] afnStates = new String[states.size()];
         Set<Character> afnAlphabet = new HashSet<>(alphabet);
         String initialState = "S";
@@ -62,8 +62,8 @@ public class RegexToAFDMain {
                     String[] toStates = transitions[i][j].split("");
 
                     afnTransitions.computeIfAbsent(fromState, k -> new HashMap<>())
-                                  .computeIfAbsent(symbol, k -> new HashSet<>())
-                                  .addAll(Arrays.asList(toStates));
+                            .computeIfAbsent(symbol, k -> new HashSet<>())
+                            .addAll(Arrays.asList(toStates));
                 }
             }
         }
@@ -79,9 +79,11 @@ public class RegexToAFDMain {
         System.out.println("Estados de aceptación: " + Arrays.toString(afd.acceptance_states));
         System.out.println("\nTransiciones:");
         for (String[] transition : afd.transitions) {
-            System.out.println("  Desde '" + transition[0] + "' con '" + transition[1] + "' va a '" + transition[2] + "'");
+            System.out.println(
+                    "  Desde '" + transition[0] + "' con '" + transition[1] + "' va a '" + transition[2] + "'");
         }
     }
+
     private static void printAFNInfo(AFN afn) {
         System.out.println("\nInformación del AFN resultante:");
         System.out.println("Número de estados: " + afn.states.length);
