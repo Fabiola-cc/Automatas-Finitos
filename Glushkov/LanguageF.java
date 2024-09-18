@@ -15,8 +15,12 @@ public class LanguageF {
         List<Integer> currentOperands = new ArrayList<>();
         List<Integer> previousOperands = null;
         boolean flag = false; // If recently closed parenthesis
+        boolean newparenthesis = false; // If recently opened parenthesis
+        int multiple_parenthesis = 0;
         boolean starFlag = false; // If recently used *
         boolean lastoperand = false; // If lastly was an operand
+        int operandstack = 0;
+        int lateroperandstack = 0;
         int operand = 0;
         List<Integer> orOperands = new ArrayList<>();
         boolean usedOr = false; // Clave para saber si hay un operador |
@@ -28,6 +32,8 @@ public class LanguageF {
                     stack.push(new ArrayList<>(currentOperands));
                     currentOperands.clear();
                     lastoperand = false;
+                    multiple_parenthesis++;
+                    newparenthesis = true;
                     break;
                 case ')':
                     // Combinar con los operandos dentro de paréntesis
@@ -35,52 +41,86 @@ public class LanguageF {
                     combinePairs(languageF, previousOperands, currentOperands);
                     flag = true;
                     lastoperand = false;
+                    multiple_parenthesis--;
+                    newparenthesis = false;
                     break;
+                case '+':
                 case '*':
+                    newparenthesis = false;
                     // Añadir las transiciones debido a *
                     if (!currentOperands.isEmpty()) {
                         int lastOperand = currentOperands.get(currentOperands.size() - 1);
-                        languageF.add(lastOperand + "" + lastOperand);
                         if (usedOr) {
-                            int beforeOperand = orOperands.get(orOperands.size() - 1);
-                            languageF.add(lastOperand + "" + beforeOperand);
-                            languageF.add(beforeOperand + "" + beforeOperand);
+                            if (operandstack > 1) {
+                                int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
+                                int last_firstOperand = orOperands.get(orOperands.size() - 1);
+                                languageF.add(lastOperand + "" + firstOperand);
+                                languageF.add(firstOperand + "" + firstOperand);
+                                languageF.add(last_firstOperand + "" + firstOperand);
+                                if (lateroperandstack > 1) {
+                                    int last_firstoperand = lastOperand - (lateroperandstack - 1);
+                                    languageF.add(firstOperand + "" + last_firstoperand);
+                                }
+                            }
+                            if (operandstack == 1 && lateroperandstack == 1) {
+                                int firstOperand = (lastOperand - 1);
+                                languageF.add(lastOperand + "" + lastOperand);
+                                languageF.add(lastOperand + "" + firstOperand);
+                                languageF.add(firstOperand + "" + lastOperand);
+                                languageF.add(firstOperand + "" + firstOperand);
+                            }
+                            if (lateroperandstack > 1) {
+                                int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
+                                int last_firstoperand = lastOperand - (lateroperandstack - 1);
+                                languageF.add(lastOperand + "" + last_firstoperand);
+                                languageF.add(lastOperand + "" + firstOperand);
+                                languageF.add(firstOperand + "" + last_firstoperand);
+                                languageF.add(last_firstoperand + "" + firstOperand);
+                                languageF.add(last_firstoperand + "" + last_firstoperand);
+                            }
                             usedOr = false;
+                        } else {
+                            languageF.add(lastOperand + "" + lastOperand);
                         }
                     }
                     starFlag = true;
                     lastoperand = false;
                     break;
-                case '+':
-                    // Añadir las transiciones debido a +
-                    if (!currentOperands.isEmpty()) {
-                        int lastOperand = currentOperands.get(currentOperands.size() - 1);
-                        languageF.add(lastOperand + "" + lastOperand);
-                    }
-                    lastoperand = false;
-                    break;
                 case '|':
+                    newparenthesis = false;
                     // Guardar los operandos de un lado del | y vaciar para los siguientes
                     orOperands.addAll(currentOperands);
+                    if (lastoperand) {
+                        operandstack++;
+                    }
                     lastoperand = false;
                     usedOr = true;
                     break;
                 default:
                     if (Character.isLetterOrDigit(c)) {
                         if (!currentOperands.isEmpty()) {
-                            for (int lastOperand : currentOperands) {
-                                languageF.add(lastOperand + "" + operand);
-                            }
+                            int lastOperand = currentOperands.get(currentOperands.size() - 1);
+                            languageF.add(lastOperand + "" + operand);
                         }
-                        if (flag || lastoperand || starFlag) {
+                        if (flag || starFlag) {
                             currentOperands.clear();
                             flag = false;
                             starFlag = false;
+                        }
+                        if (lastoperand) {
+                            if (!usedOr && !newparenthesis) {
+                                operandstack++;
+                            }
+                            currentOperands.clear();
+                        }
+                        if (usedOr) {
+                            lateroperandstack++;
                         }
                         currentOperands.add(operand);
                         operand++;
                     }
                     lastoperand = true;
+                    newparenthesis = false;
                     break;
             }
         }
