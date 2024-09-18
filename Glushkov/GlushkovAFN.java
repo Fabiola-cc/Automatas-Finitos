@@ -92,7 +92,7 @@ public class GlushkovAFN {
     }
 
     public static void main(String[] args) {
-        String inputRegex = "(ab|ba)+";
+        String inputRegex = "(a|bb)+";
         regexToDFA(inputRegex);
 
     }

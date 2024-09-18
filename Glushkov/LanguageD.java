@@ -15,6 +15,7 @@ public class LanguageD {
         boolean parenthesis = false; // Clave para saber si hay un operador ()
         boolean usedOr = false; // Clave para saber si hay un operador |
         boolean shouldClose = false; // no hay razones notorias para continuar el ciclo
+        boolean waitOR = false;
         for (char c : reversedRegex.toCharArray()) {
             switch (c) {
                 case '(':
@@ -48,10 +49,18 @@ public class LanguageD {
                     break;
                 default:
                     if (shouldClose) {
-                        return D;
+                        if (!waitOR) {
+                            return D;
+                        }
+                        operandID--;
+                        break;
                     }
                     if (!expectOperand) { // para un caracter simple
                         D.add(operandID);
+                        if (isNextOperatorOr(reversedRegex, operandID)) {
+                            c = '|';
+                            break;
+                        }
                         shouldClose = true;
                     } else if (expectOperand) { // Si hay una operación
                         D.add(operandID);
@@ -67,12 +76,35 @@ public class LanguageD {
                             usedOr = false;
                             shouldClose = true;
                         }
+                        if (isNextOperatorOr(reversedRegex, operandID)) {
+                            waitOR = true;
+                        }
                     }
                     operandID--; // reduce el índice
                     break;
             }
         }
         return D;
+    }
+
+    private static boolean isNextOperatorOr(String regex, int startIndex) {
+        // Recorre desde el índice dado hasta el final de la cadena
+        for (int i = startIndex; i < regex.length(); i++) {
+            char currentChar = regex.charAt(i);
+
+            // Si encuentras un operador |, devuelve true
+            if (currentChar == '|') {
+                return true;
+            }
+
+            // Si encuentras un carácter que no es operando (letras o números), termina la
+            // búsqueda
+            if (!Character.isLetterOrDigit(currentChar)) {
+                return false;
+            }
+        }
+
+        return false;
     }
 
 }

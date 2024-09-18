@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "src.Main",
+            "projectName": "Automatas-Finitos_e52bd5a3"
+        },
+        {
+            "type": "java",
             "name": "GlushkovAFN",
             "request": "launch",
             "mainClass": "Glushkov.GlushkovAFN",
