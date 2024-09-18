@@ -1,0 +1,35 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar y Ejecutar",
+            "type": "shell",
+            "command": "javac",
+            "args": [
+                "-cp",
+                "lib/*", // Ruta donde están las bibliotecas jar
+                "-d",
+                "bin",
+                "src/Main.java" // Ruta a tu archivo principal (ajusta si tu archivo está en otro lugar)
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Ejecutar",
+            "type": "shell",
+            "command": "java",
+            "args": [
+                "-cp",
+                "bin:lib/*", // Clase principal y bibliotecas
+                "Main" // El nombre de tu clase principal (ajusta según el nombre)
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

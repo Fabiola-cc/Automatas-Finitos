@@ -11,11 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.swing.SwingUtilities;
 
 import Automatas.AFD;
 import Automatas.AFN;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -81,7 +85,24 @@ public class Main {
         //Minimize AFD
         AFD afdMinimize = afd.minimize();
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("Estados", afdMinimize.getStates());
+        data.put("Alfabeto", afdMinimize.getAlphabet());
+        data.put("Estado inicial", afdMinimize.getInitialState());
+        data.put("Estados de aceptación", afdMinimize.getAcceptanceStates());
+        data.put("Matriz de trancisión", afdMinimize.getTransitions());
 
+
+        // Usar Gson para convertir el mapa a JSON
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonString = gson.toJson(data);
+
+        try (FileWriter file = new FileWriter("Automata.json")) {
+            file.write(jsonString);
+            System.out.println("Archivo JSON generado exitosamente.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         SwingUtilities.invokeLater(() -> {
             Grafo frame = new Grafo(afdMinimize.getStates(), afdMinimize.getInitialState(), afdMinimize.getAcceptanceStates(), afdMinimize.getTransitions());

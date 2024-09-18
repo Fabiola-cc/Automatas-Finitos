@@ -1,0 +1,26 @@
+{
+  "Alfabeto": [
+    "1"
+  ],
+  "Estados": [
+    "q1",
+    "q2",
+    "q0"
+  ],
+  "Matriz de trancisión": [
+    [
+      "q1",
+      "1",
+      "q2"
+    ],
+    [
+      "q0",
+      "1",
+      "q1"
+    ]
+  ],
+  "Estados de aceptación": [
+    "q2"
+  ],
+  "Estado inicial": "q0"
+}
