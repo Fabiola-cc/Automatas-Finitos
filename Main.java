@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -50,28 +52,29 @@ public class Main {
         for (int i = 0; i < transitionMatrix.length; i++) {
             String state = states[i];
             transitions.putIfAbsent(state, new HashMap<>());
-
+            
             for (int j = 0; j < transitionMatrix[i].length; j++) {
                 if (transitionMatrix[i][j] != null) {
                     char input = alphabet.toArray(new Character[0])[j];
-
+                    
                     Set<String> destinationStates = new HashSet<>(Arrays.asList(transitionMatrix[i][j].split("")));
                     transitions.get(state).put(input, destinationStates);
                 }
             }
         }
-
-        AFN AFN = new AFN(states, alphabet, states[0], acceptanceStates, transitions);
-
-        AFD AFD = AFN.convertAFNtoAFD(AFN);
-
         
-
-
         for (Object object : initialAFN) {
         System.out.println();
         System.out.println(object);
         }
+
+        //Creates none determinist automata
+        AFN afn = new AFN(states, alphabet, states[0], acceptanceStates, transitions);
+        //Create determinist automata
+        AFD afd = AFN.convertAFNtoAFD(afn);
+        //Minimize AFD
+        AFD afdMinimize = afd.minimize();
+
 
         // String[] states = {"q0", "q1", "q2", "q3", "q4", "q5"};
         // String[] alphabet = {"0", "1"};
@@ -110,9 +113,9 @@ public class Main {
         // }
         // }
 
-        // SwingUtilities.invokeLater(() -> {
-        //     Grafo frame = new Grafo(afdMinimize.getStates(), afdMinimize.getInitialState(), afdMinimize.getAcceptanceStates(), afdMinimize.getTransitions());
-        //     frame.setVisible(true);
-        // });
+        SwingUtilities.invokeLater(() -> {
+            Grafo frame = new Grafo(afdMinimize.getStates(), afdMinimize.getInitialState(), afdMinimize.getAcceptanceStates(), afdMinimize.getTransitions());
+            frame.setVisible(true);
+        });
     }
 }

@@ -94,5 +94,6 @@ public class GlushkovAFN {
     public static void main(String[] args) {
         String inputRegex = "(1(1|0))";
         regexToDFA(inputRegex);
+        
     }
 }

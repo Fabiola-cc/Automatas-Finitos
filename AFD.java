@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -244,13 +245,17 @@ public class AFD {
 
         //Define new states
         ArrayList<String> newStates = new ArrayList<>();
-        for (String state1 : combinedStates2) {
-            for (String state2 : states) {
-                if (!state1.contains(state2)) {
-                    newStates.add(state2);
+        if (combinedStates2.size() > 0) {
+            for (String state1 : combinedStates2) {
+                for (String state2 : states) {
+                    if (!state1.contains(state2)) {
+                        newStates.add(state2);
+                    }
                 }
+                newStates.add(state1);
             }
-            newStates.add(state1);
+        } else {
+            newStates = new ArrayList<>(Arrays.asList(states));
         }
 
         //Define new initial state
@@ -314,8 +319,26 @@ public class AFD {
     }
 
     private Set<List<String>> differenceList(Set<List<String>> Q, Set<List<String>> F) {
-        Set<List<String>> difference = new HashSet<>(Q);
-        difference.removeAll(F);
-        return difference;
+        Set<List<String>> normalizedQ = new HashSet<>();
+        Set<List<String>> normalizedF = new HashSet<>();
+        
+        // Normaliza las listas de ambos sets
+        for (List<String> qList : Q) {
+            List<String> sortedList = new ArrayList<>(qList);
+            Collections.sort(sortedList);
+            normalizedQ.add(sortedList);
+        }
+        
+        for (List<String> fList : F) {
+            List<String> sortedList = new ArrayList<>(fList);
+            Collections.sort(sortedList);
+            normalizedF.add(sortedList);
+        }
+        
+        // Realiza la diferencia con las listas normalizadas
+        normalizedQ.removeAll(normalizedF);
+        
+        return normalizedQ;
     }
+    
 }
