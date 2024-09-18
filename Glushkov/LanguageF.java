@@ -9,7 +9,7 @@ import java.util.Stack;
 public class LanguageF {
 
     // Función para obtener el lenguaje F (parejas de números)
-    public static Set<String> extractF(String regex) {
+    public static Set<String> extractF(String regex, int total_operandos) {
         Set<String> languageF = new HashSet<>();
         Stack<List<Integer>> stack = new Stack<>();
         List<Integer> currentOperands = new ArrayList<>();
@@ -53,13 +53,13 @@ public class LanguageF {
                         if (usedOr) {
                             if (operandstack > 1) {
                                 int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
-                                int last_firstOperand = orOperands.get(orOperands.size() - 1);
+                                int first_lastOperand = orOperands.get(orOperands.size() - 1);
                                 languageF.add(lastOperand + "" + firstOperand);
-                                languageF.add(firstOperand + "" + firstOperand);
-                                languageF.add(last_firstOperand + "" + firstOperand);
-                                if (lateroperandstack > 1) {
-                                    int last_firstoperand = lastOperand - (lateroperandstack - 1);
-                                    languageF.add(firstOperand + "" + last_firstoperand);
+                                // languageF.add(firstOperand + "" + firstOperand);
+                                languageF.add(first_lastOperand + "" + firstOperand);
+                                if (lastOperand < total_operandos) {
+                                    languageF.add(firstOperand + "" + (lastOperand + 1));
+                                    languageF.add(lastOperand + "" + (lastOperand + 1));
                                 }
                             }
                             if (operandstack == 1 && lateroperandstack == 1) {
@@ -68,15 +68,23 @@ public class LanguageF {
                                 languageF.add(lastOperand + "" + firstOperand);
                                 languageF.add(firstOperand + "" + lastOperand);
                                 languageF.add(firstOperand + "" + firstOperand);
+                                if (lastOperand < total_operandos) {
+                                    languageF.add(firstOperand + "" + (lastOperand + 1));
+                                    languageF.add(lastOperand + "" + (lastOperand + 1));
+                                }
                             }
                             if (lateroperandstack > 1) {
                                 int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
                                 int last_firstoperand = lastOperand - (lateroperandstack - 1);
                                 languageF.add(lastOperand + "" + last_firstoperand);
                                 languageF.add(lastOperand + "" + firstOperand);
-                                languageF.add(firstOperand + "" + last_firstoperand);
-                                languageF.add(last_firstoperand + "" + firstOperand);
-                                languageF.add(last_firstoperand + "" + last_firstoperand);
+                                // languageF.add(firstOperand + "" + last_firstoperand);
+                                // languageF.add(last_firstoperand + "" + firstOperand);
+                                // languageF.add(last_firstoperand + "" + last_firstoperand);
+                                if (lastOperand < total_operandos) {
+                                    languageF.add(firstOperand + "" + (lastOperand + 1));
+                                    languageF.add(last_firstoperand + "" + (lastOperand + 1));
+                                }
                             }
                             usedOr = false;
                         } else {

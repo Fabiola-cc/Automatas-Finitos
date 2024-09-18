@@ -26,7 +26,7 @@ public class GlushkovAFN {
         // Construir el árbol sintáctico y calcular P, D, F
         Set<Integer> P = LanguageP.extractP(regex); // índices de operandos iniciales
         Set<Integer> D = LanguageD.extractD(regex, total_operandos - 1); // índices de operandos finales
-        Set<String> F = LanguageF.extractF(regex);
+        Set<String> F = LanguageF.extractF(regex, total_operandos - 1);
 
         // Listado de estados
         List<Character> states = new ArrayList<>();
@@ -92,7 +92,8 @@ public class GlushkovAFN {
     }
 
     public static void main(String[] args) {
-        String inputRegex = "(1(1|0)*)";
+        String inputRegex = "(ab|ba)+";
         regexToDFA(inputRegex);
+
     }
 }
