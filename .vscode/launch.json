@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RegexTester",
+            "request": "launch",
+            "mainClass": "RegexTester",
+            "projectName": "Automatas-Finitos_120b8b4c"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "src.Main",
