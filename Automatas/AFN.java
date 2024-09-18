@@ -1,13 +1,14 @@
+package Automatas;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-
 public class AFN {
-    String[] states;
-    Set<Character> alphabet;
-    String initialState;
-    Set<String> acceptanceStates;
-    Map<String, Map<Character, Set<String>>> transitions;
+    public String[] states;
+    public Set<Character> alphabet;
+    public String initialState;
+    public Set<String> acceptanceStates;
+    public Map<String, Map<Character, Set<String>>> transitions;
 
     public AFN(String[] states, Set<Character> alphabet, String initialState,
                Set<String> acceptanceStates, Map<String, Map<Character, Set<String>>> transitions) {

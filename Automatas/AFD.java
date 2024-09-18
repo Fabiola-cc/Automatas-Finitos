@@ -1,3 +1,4 @@
+package Automatas;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,11 +11,11 @@ import java.util.Set;
 
 public class AFD {
 
-    String[] states;
-    String[] alphabet;
-    String initial_state;
-    String[] acceptance_states;
-    String[][] transitions;
+    public String[] states;
+    public String[] alphabet;
+    public String initial_state;
+    public String[] acceptance_states;
+    public String[][] transitions;
 
     public AFD(String[] states, String[] alphabet, String initial_state, String[] acceptance_states, String[][] transitions ) {
         this.states = states;

@@ -1,13 +1,17 @@
 // Es solo un mini main Para corroborar el uso de clase AFN
 
 import Glushkov.GlushkovAFN;
+import ShutingYard.ShuntingYardRegex;
 
 import java.util.*;
+
+import Automatas.AFD;
+import Automatas.AFN;
 
 public class RegexToAFDMain {
     public static void main(String[] args) {
         // Paso 1: Definir la expresión regular
-        String regex = "(a|b)*abb";
+        String regex = "1(1|0)";
         System.out.println("Expresión regular: " + regex);
 
         // Paso 2: Convertir la expresión regular a notación postfix
