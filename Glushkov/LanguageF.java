@@ -15,9 +15,11 @@ public class LanguageF {
         List<Integer> currentOperands = new ArrayList<>();
         List<Integer> previousOperands = null;
         boolean flag = false; // If recently closed parenthesis
+        boolean starFlag = false; // If recently used *
         boolean lastoperand = false; // If lastly was an operand
         int operand = 0;
-
+        List<Integer> orOperands = new ArrayList<>();
+        boolean usedOr = false; // Clave para saber si hay un operador |
         for (int i = 0; i < regex.length(); i++) {
             char c = regex.charAt(i);
             switch (c) {
@@ -39,7 +41,14 @@ public class LanguageF {
                     if (!currentOperands.isEmpty()) {
                         int lastOperand = currentOperands.get(currentOperands.size() - 1);
                         languageF.add(lastOperand + "" + lastOperand);
+                        if (usedOr) {
+                            int beforeOperand = orOperands.get(orOperands.size() - 1);
+                            languageF.add(lastOperand + "" + beforeOperand);
+                            languageF.add(beforeOperand + "" + beforeOperand);
+                            usedOr = false;
+                        }
                     }
+                    starFlag = true;
                     lastoperand = false;
                     break;
                 case '+':
@@ -52,8 +61,9 @@ public class LanguageF {
                     break;
                 case '|':
                     // Guardar los operandos de un lado del | y vaciar para los siguientes
-                    stack.push(new ArrayList<>(currentOperands));
+                    orOperands.addAll(currentOperands);
                     lastoperand = false;
+                    usedOr = true;
                     break;
                 default:
                     if (Character.isLetterOrDigit(c)) {
@@ -62,12 +72,10 @@ public class LanguageF {
                                 languageF.add(lastOperand + "" + operand);
                             }
                         }
-                        if (flag) {
+                        if (flag || lastoperand || starFlag) {
                             currentOperands.clear();
                             flag = false;
-                        }
-                        if (lastoperand) {
-                            currentOperands.clear();
+                            starFlag = false;
                         }
                         currentOperands.add(operand);
                         operand++;

@@ -39,6 +39,9 @@ public class LanguageD {
                     shouldClose = false;
                     break;
                 case '*':
+                    if (!starFlag && !expectOperand && shouldClose) {
+                        break;
+                    }
                     expectOperand = true;
                     starFlag = true;
                     shouldClose = false;
@@ -53,15 +56,15 @@ public class LanguageD {
                     } else if (expectOperand) { // Si hay una operación
                         D.add(operandID);
                         expectOperand = false;
+                        if (!starFlag && !usedOr && !expectOperand) { // no hay *, ni | y acaba de usarse un operando
+                            shouldClose = true;
+                        }
                         if (starFlag && !parenthesis) { // si hay * y no ()
                             expectOperand = false;
                             starFlag = false;
                         }
                         if (usedOr && !starFlag) { // ya se aplicó | y *
                             usedOr = false;
-                            shouldClose = true;
-                        }
-                        if (!starFlag && !usedOr && !expectOperand) { // no hay *, ni | y acaba de usarse un operando
                             shouldClose = true;
                         }
                     }
