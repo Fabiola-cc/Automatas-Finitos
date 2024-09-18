@@ -56,7 +56,7 @@ public class AFD {
     private String transition(String q, char a, String[][] d) {
         String transited_state = "";
         for (String[] d1 : d) {
-            if (d1[0].equals(q) && d1[1].equals(a)) {
+            if (d1[0].equals(q) && d1[1].equals(Character.toString(a))) {
                 transited_state = d1[2];
             }
         }

@@ -20,6 +20,7 @@ import Automatas.AFD;
 import Automatas.AFN;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -85,6 +86,16 @@ public class Main {
         //Minimize AFD
         AFD afdMinimize = afd.minimize();
 
+        ArrayList<ArrayList<String>> derivationProcess = afdMinimize.derivation(afdMinimize.getInitialState(), inputString, afdMinimize.getTransitions());
+
+        //Checks if a string is valid in automata
+        if (afdMinimize.accepted(derivationProcess.get(derivationProcess.size() - 1).get(0), inputString, afdMinimize.getAcceptanceStates(), afdMinimize.getTransitions())) {
+            System.out.println("La cadena es aceptada");
+        } else {
+            System.out.println("La cadena no es aceptada");
+        }
+
+        //Builds Map for JSON file
         Map<String, Object> data = new HashMap<>();
         data.put("Estados", afdMinimize.getStates());
         data.put("Alfabeto", afdMinimize.getAlphabet());
@@ -93,7 +104,7 @@ public class Main {
         data.put("Matriz de trancisión", afdMinimize.getTransitions());
 
 
-        // Usar Gson para convertir el mapa a JSON
+        // Use Gson to convert the Map to JSON
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(data);
 
