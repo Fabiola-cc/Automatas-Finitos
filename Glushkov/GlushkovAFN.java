@@ -29,10 +29,10 @@ public class GlushkovAFN {
         Set<String> F = LanguageF.extractF(regex, total_operandos - 1);
 
         // Listado de estados
-        List<Character> states = new ArrayList<>();
-        states.add('s');
+        List<String> states = new ArrayList<>();
+        states.add("s");
         for (int i = 0; i < total_operandos; i++) {
-            states.add((char) ('0' + i));
+            states.add(String.valueOf(i));
         }
 
         // Listado de entradas
