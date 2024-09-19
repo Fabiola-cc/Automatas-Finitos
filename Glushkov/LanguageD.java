@@ -69,6 +69,7 @@ public class LanguageD {
                         shouldClose = true;
                     } else if (expectOperand) { // Si hay una operación
                         D.add(operandID);
+                        waitOR = false;
                         expectOperand = false;
                         if (!starFlag && !usedOr && !expectOperand) { // no hay *, ni | y acaba de usarse un operando
                             shouldClose = true;

@@ -30,7 +30,9 @@ public class LanguageF {
                 case '(':
                     // Guardar el estado actual de operandos
                     stack.push(new ArrayList<>(currentOperands));
-                    currentOperands.clear();
+                    if (regex.charAt(i + 2) == '|') {
+                        currentOperands.clear();
+                    }
                     lastoperand = false;
                     multiple_parenthesis++;
                     newparenthesis = true;
@@ -50,7 +52,7 @@ public class LanguageF {
                     // Añadir las transiciones debido a *
                     if (!currentOperands.isEmpty()) {
                         int lastOperand = currentOperands.get(currentOperands.size() - 1);
-                        if (usedOr) {
+                        if (usedOr && flag) {
                             if (operandstack > 1) {
                                 int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
                                 int first_lastOperand = orOperands.get(orOperands.size() - 1);
@@ -84,7 +86,7 @@ public class LanguageF {
                                 languageF.add(lastOperand + "" + firstOperand);
                                 if (lastOperand < total_operandos) {
                                     languageF.add(firstOperand + "" + (lastOperand + 1));
-                                    languageF.add(last_firstoperand + "" + (lastOperand + 1));
+                                    languageF.add(lastOperand + "" + (lastOperand + 1));
                                 }
                                 if (operandstack == 1) {
                                     languageF.add(firstOperand + "" + firstOperand);
@@ -92,10 +94,16 @@ public class LanguageF {
                                 }
                             }
                             usedOr = false;
+                            operandstack = 0;
+                            lateroperandstack = 0;
                         } else {
                             languageF.add(lastOperand + "" + lastOperand);
                             if (lastOperand < total_operandos) {
-                                languageF.add(lastOperand + "" + (lastOperand + 1));
+                                char idk = regex.charAt(i + 1);
+                                boolean next_not_or = idk != '|';
+                                if (next_not_or) {
+                                    languageF.add(lastOperand + "" + (lastOperand + 1));
+                                }
                             }
                         }
                     }
@@ -106,7 +114,7 @@ public class LanguageF {
                     newparenthesis = false;
                     // Guardar los operandos de un lado del | y vaciar para los siguientes
                     orOperands.addAll(currentOperands);
-                    if (lastoperand) {
+                    if (!newparenthesis) {
                         operandstack++;
                     }
                     lastoperand = false;
@@ -114,7 +122,8 @@ public class LanguageF {
                     break;
                 default:
                     if (Character.isLetterOrDigit(c)) {
-                        if (!currentOperands.isEmpty() && lastoperand) {
+                        boolean check_concat = (lastoperand || newparenthesis);
+                        if (!currentOperands.isEmpty() && check_concat) {
                             int lastOperand = currentOperands.get(currentOperands.size() - 1);
                             languageF.add(lastOperand + "" + operand);
                         }
