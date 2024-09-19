@@ -54,12 +54,16 @@ public class LanguageF {
                             if (operandstack > 1) {
                                 int firstOperand = orOperands.get(orOperands.size() - 1) - (operandstack - 1);
                                 int first_lastOperand = orOperands.get(orOperands.size() - 1);
+                                int last_firstoperand = lastOperand - (lateroperandstack - 1);
                                 languageF.add(lastOperand + "" + firstOperand);
-                                // languageF.add(firstOperand + "" + firstOperand);
                                 languageF.add(first_lastOperand + "" + firstOperand);
+                                languageF.add(first_lastOperand + "" + last_firstoperand);
                                 if (lastOperand < total_operandos) {
-                                    languageF.add(firstOperand + "" + (lastOperand + 1));
+                                    languageF.add(first_lastOperand + "" + (lastOperand + 1));
                                     languageF.add(lastOperand + "" + (lastOperand + 1));
+                                }
+                                if (lateroperandstack == 1) {
+                                    languageF.add(lastOperand + "" + lastOperand);
                                 }
                             }
                             if (operandstack == 1 && lateroperandstack == 1) {
@@ -78,12 +82,13 @@ public class LanguageF {
                                 int last_firstoperand = lastOperand - (lateroperandstack - 1);
                                 languageF.add(lastOperand + "" + last_firstoperand);
                                 languageF.add(lastOperand + "" + firstOperand);
-                                // languageF.add(firstOperand + "" + last_firstoperand);
-                                // languageF.add(last_firstoperand + "" + firstOperand);
-                                // languageF.add(last_firstoperand + "" + last_firstoperand);
                                 if (lastOperand < total_operandos) {
                                     languageF.add(firstOperand + "" + (lastOperand + 1));
                                     languageF.add(last_firstoperand + "" + (lastOperand + 1));
+                                }
+                                if (operandstack == 1) {
+                                    languageF.add(firstOperand + "" + firstOperand);
+                                    languageF.add(firstOperand + "" + last_firstoperand);
                                 }
                             }
                             usedOr = false;
@@ -106,7 +111,7 @@ public class LanguageF {
                     break;
                 default:
                     if (Character.isLetterOrDigit(c)) {
-                        if (!currentOperands.isEmpty()) {
+                        if (!currentOperands.isEmpty() && lastoperand) {
                             int lastOperand = currentOperands.get(currentOperands.size() - 1);
                             languageF.add(lastOperand + "" + operand);
                         }

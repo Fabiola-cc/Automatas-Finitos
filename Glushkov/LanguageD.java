@@ -16,6 +16,7 @@ public class LanguageD {
         boolean usedOr = false; // Clave para saber si hay un operador |
         boolean shouldClose = false; // no hay razones notorias para continuar el ciclo
         boolean waitOR = false;
+        int regexPos = 0;
         for (char c : reversedRegex.toCharArray()) {
             switch (c) {
                 case '(':
@@ -26,6 +27,9 @@ public class LanguageD {
                     starFlag = false;
                     break;
                 case ')':
+                    if (!starFlag && !expectOperand && shouldClose) {
+                        break;
+                    }
                     parenthesis = true;
                     expectOperand = true;
                     shouldClose = false;
@@ -36,7 +40,7 @@ public class LanguageD {
                     shouldClose = false;
                     break;
                 case '+':
-                    expectOperand = false;
+                    expectOperand = true;
                     shouldClose = false;
                     break;
                 case '*':
@@ -57,8 +61,9 @@ public class LanguageD {
                     }
                     if (!expectOperand) { // para un caracter simple
                         D.add(operandID);
-                        if (isNextOperatorOr(reversedRegex, operandID)) {
-                            c = '|';
+                        if (isNextOperatorOr(reversedRegex, regexPos)) {
+                            waitOR = true;
+                            operandID--; // reduce el índice
                             break;
                         }
                         shouldClose = true;
@@ -76,13 +81,14 @@ public class LanguageD {
                             usedOr = false;
                             shouldClose = true;
                         }
-                        if (isNextOperatorOr(reversedRegex, operandID)) {
+                        if (isNextOperatorOr(reversedRegex, regexPos)) {
                             waitOR = true;
                         }
                     }
                     operandID--; // reduce el índice
                     break;
             }
+            regexPos++;
         }
         return D;
     }

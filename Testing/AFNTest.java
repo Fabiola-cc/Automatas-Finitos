@@ -51,7 +51,7 @@ public class AFNTest {
         Set<Integer> expectedD = new HashSet<>();
         expectedD.add(3);
 
-        Set<Integer> resultD = LanguageD.extractD(regex, 2);
+        Set<Integer> resultD = LanguageD.extractD(regex, 3);
         assertEquals(expectedD, resultD);
 
         Set<String> expectedF = new HashSet<>();
@@ -63,7 +63,7 @@ public class AFNTest {
         expectedF.add("20");
         expectedF.add("22");
 
-        Set<String> resultF = LanguageF.extractF(regex, 2);
+        Set<String> resultF = LanguageF.extractF(regex, 3);
         assertEquals(expectedF, resultF);
     }
 
