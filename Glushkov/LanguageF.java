@@ -94,6 +94,9 @@ public class LanguageF {
                             usedOr = false;
                         } else {
                             languageF.add(lastOperand + "" + lastOperand);
+                            if (lastOperand < total_operandos) {
+                                languageF.add(lastOperand + "" + (lastOperand + 1));
+                            }
                         }
                     }
                     starFlag = true;
