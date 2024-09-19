@@ -1,25 +1,11 @@
 {
   "Alfabeto": [
-    "a",
-    "b"
+    "1"
   ],
   "Estados": [
-    "q2q3q0q1"
+    "q0q2q1q2q0q3q1q3q2q3q0q1"
   ],
-  "Matriz de trancisión": [
-    [
-      "q2q3q0q1",
-      "a",
-      "q2q3q0q1"
-    ],
-    [
-      "q2q3q0q1",
-      "b",
-      "q2q3q0q1"
-    ]
-  ],
-  "Estados de aceptación": [
-    "q2q3q0q1"
-  ],
-  "Estado inicial": "q2q3q0q1"
+  "Matriz de trancisiÃ³n": [],
+  "Estados de aceptaciÃ³n": [],
+  "Estado inicial": "q0q2q1q2q0q3q1q3q2q3q0q1"
 }

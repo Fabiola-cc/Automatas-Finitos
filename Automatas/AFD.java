@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -142,44 +141,55 @@ public class AFD {
                 combinations.add(combination);
             }
         }
-
+        
         
         Set<String[]> newCombinations = new HashSet<>();
-
-        Iterator<String[]> iterator = combinations.iterator();
-        while (iterator.hasNext()) {
-            String[] combination = iterator.next();
-
-            for (String alphabet : transitionMap.keySet()) {
-                HashMap<String, String> alphabetTransition = transitionMap.get(alphabet);
-
-                ArrayList<String> firstValues = new ArrayList<>();
-                ArrayList<String> secondValues = new ArrayList<>();
-
-                if (alphabetTransition.values().contains(combination[0]) && alphabetTransition.values().contains(combination[1])) {
-                    for (String key : alphabetTransition.keySet()) {
-                        if (alphabetTransition.get(key).equals(combination[0]) && Arrays.asList(acceptance_states).contains(key) == false) {
-                            firstValues.add(key);
-                        }
-                        if (alphabetTransition.get(key).equals(combination[1]) && Arrays.asList(acceptance_states).contains(key) == false) {
-                            secondValues.add(key);
+        Set<String[]> oldCombinations = new HashSet<>(combinations);
+        do {
+            oldCombinations = new HashSet<>(combinations);
+            for (String[] combination : combinations) {
+                for (String alphabet : transitionMap.keySet()) {
+                    HashMap<String, String> alphabetTransition = transitionMap.get(alphabet);
+    
+                    ArrayList<String> firstValues = new ArrayList<>();
+                    ArrayList<String> secondValues = new ArrayList<>();
+    
+                    if (alphabetTransition.values().contains(combination[0]) && alphabetTransition.values().contains(combination[1])) {
+                        for (String key : alphabetTransition.keySet()) {
+                            if (alphabetTransition.get(key).equals(combination[0]) && Arrays.asList(acceptance_states).contains(key) == false) {
+                                firstValues.add(key);
+                            }
+                            if (alphabetTransition.get(key).equals(combination[1]) && Arrays.asList(acceptance_states).contains(key) == false) {
+                                secondValues.add(key);
+                            }
                         }
                     }
-                }
-
-                if (firstValues.size() > 0 && secondValues.size() > 0) {
-                    for (String i : firstValues) {
-                        for (String j : secondValues) {
-                            String[] newCombination = {i, j};
-                            newCombinations.add(newCombination);
+    
+                    if (firstValues.size() > 0 && secondValues.size() > 0) {
+                        for (String i : firstValues) {
+                            for (String j : secondValues) {
+                                String[] newCombination = {i, j};
+                                newCombinations.add(newCombination);
+                            }
                         }
                     }
                 }
             }
-        }
+    
+            // Add all new combinations to the original set
+            combinations.addAll(newCombinations);
 
-        // Add all new combinations to the original set
-        combinations.addAll(newCombinations);
+            Set<List<String>> combinationsList = new HashSet<>();
+            Set<List<String>> oldCombinationsList = new HashSet<>();
+
+            for (String[] arr : combinations) {
+                combinationsList.add(Arrays.asList(arr));
+            }
+            for (String[] arr : oldCombinations) {
+                oldCombinationsList.add(Arrays.asList(arr));
+            }
+
+        } while (!differenceList(combinations,oldCombinations).isEmpty());
 
         Set<String[]> matrix_combinations = new HashSet<>();
 
@@ -196,19 +206,8 @@ public class AFD {
                 }
             }
         }
-
         
-        Set<List<String>> combinationsList = new HashSet<>();
-        Set<List<String>> combinationsMatrixList = new HashSet<>();
-        
-        for (String[] arr : combinations) {
-            combinationsList.add(Arrays.asList(arr));
-        }
-        for (String[] arr : matrix_combinations) {
-            combinationsMatrixList.add(Arrays.asList(arr));
-        }
-        
-        Set<List<String>> states_to_combine = differenceList(combinationsMatrixList, combinationsList);
+        Set<List<String>> states_to_combine = differenceList(matrix_combinations, combinations);
 
         Set<String> combinedStates = new HashSet<>();
 
@@ -284,7 +283,7 @@ public class AFD {
         for (String newState : newStates) {
             int totalAlphabet = alphabet.length;
             for (String[] oldTransition : transitions) {
-                if (newState.contains(oldTransition[0])) {
+                if (newState.equals(oldTransition[0])) {
                     for (String realState : combinedStates2) {
                         if (realState.contains(oldTransition[2])) {
                             oldTransition[2] = realState;
@@ -319,18 +318,29 @@ public class AFD {
         return difference;
     }
 
-    private Set<List<String>> differenceList(Set<List<String>> Q, Set<List<String>> F) {
+    private Set<List<String>> differenceList(Set<String[]> Q, Set<String[]> F) {
+
+        Set<List<String>> q = new HashSet<>();
+        Set<List<String>> f = new HashSet<>();
+
+        for (String[] arr : Q) {
+            q.add(Arrays.asList(arr));
+        }
+        for (String[] arr : F) {
+            f.add(Arrays.asList(arr));
+        }
+
         Set<List<String>> normalizedQ = new HashSet<>();
         Set<List<String>> normalizedF = new HashSet<>();
         
         // Normaliza las listas de ambos sets
-        for (List<String> qList : Q) {
+        for (List<String> qList : q) {
             List<String> sortedList = new ArrayList<>(qList);
             Collections.sort(sortedList);
             normalizedQ.add(sortedList);
         }
         
-        for (List<String> fList : F) {
+        for (List<String> fList : f) {
             List<String> sortedList = new ArrayList<>(fList);
             Collections.sort(sortedList);
             normalizedF.add(sortedList);
