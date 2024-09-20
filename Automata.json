@@ -3,9 +3,72 @@
     "1"
   ],
   "Estados": [
-    "q0q2q1q2q0q3q1q3q2q3q0q1"
+    "q1",
+    "q2",
+    "q3",
+    "q4",
+    "q0",
+    "q5",
+    "q6",
+    "q7",
+    "q8",
+    "q9",
+    "q10"
   ],
-  "Matriz de trancisión": [],
-  "Estados de aceptación": [],
-  "Estado inicial": "q0q2q1q2q0q3q1q3q2q3q0q1"
+  "Matriz de trancisión": [
+    [
+      "q1",
+      "1",
+      "q2"
+    ],
+    [
+      "q2",
+      "1",
+      "q3"
+    ],
+    [
+      "q3",
+      "1",
+      "q4"
+    ],
+    [
+      "q4",
+      "1",
+      "q5"
+    ],
+    [
+      "q0",
+      "1",
+      "q1"
+    ],
+    [
+      "q5",
+      "1",
+      "q6"
+    ],
+    [
+      "q6",
+      "1",
+      "q7"
+    ],
+    [
+      "q7",
+      "1",
+      "q8"
+    ],
+    [
+      "q8",
+      "1",
+      "q9"
+    ],
+    [
+      "q9",
+      "1",
+      "q10"
+    ]
+  ],
+  "Estados de aceptación": [
+    "q10"
+  ],
+  "Estado inicial": "q0"
 }

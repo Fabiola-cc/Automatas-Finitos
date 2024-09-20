@@ -169,10 +169,22 @@ public class AFD {
                         for (String i : firstValues) {
                             for (String j : secondValues) {
                                 String[] newCombination = {i, j};
-                                newCombinations.add(newCombination);
+                    
+                                // Convertimos el array en una lista para comparar por contenido
+                                List<String> newCombinationList = Arrays.asList(newCombination);
+                    
+                                // Comparamos si esa lista ya está en las combinaciones existentes
+                                boolean exists = combinations.stream()
+                                    .map(Arrays::asList)  // Convertimos cada combinación existente en una lista
+                                    .anyMatch(existingCombination -> existingCombination.equals(newCombinationList));
+                    
+                                if (!exists) {
+                                    newCombinations.add(newCombination);
+                                }
                             }
                         }
                     }
+                    
                 }
             }
     
@@ -189,6 +201,7 @@ public class AFD {
                 oldCombinationsList.add(Arrays.asList(arr));
             }
 
+            newCombinations.clear();
         } while (!differenceList(combinations,oldCombinations).isEmpty());
 
         Set<String[]> matrix_combinations = new HashSet<>();
