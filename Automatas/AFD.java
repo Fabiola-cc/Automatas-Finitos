@@ -296,7 +296,7 @@ public class AFD {
         for (String newState : newStates) {
             int totalAlphabet = alphabet.length;
             for (String[] oldTransition : transitions) {
-                if (newState.equals(oldTransition[0])) {
+                if (newState.contains(oldTransition[0])) {
                     for (String realState : combinedStates2) {
                         if (realState.contains(oldTransition[2])) {
                             oldTransition[2] = realState;

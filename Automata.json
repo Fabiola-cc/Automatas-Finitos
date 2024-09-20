@@ -1,74 +1,38 @@
 {
   "Alfabeto": [
-    "1"
+    "a",
+    "b",
+    "c",
+    "d"
   ],
   "Estados": [
-    "q1",
-    "q2",
     "q3",
-    "q4",
-    "q0",
-    "q5",
-    "q6",
-    "q7",
-    "q8",
-    "q9",
-    "q10"
+    "q2q4q0q2q1q2q0q4q1q4q0q1"
   ],
   "Matriz de trancisión": [
     [
-      "q1",
-      "1",
-      "q2"
+      "q2q4q0q2q1q2q0q4q1q4q0q1",
+      "a",
+      "q2q4q0q2q1q2q0q4q1q4q0q1"
     ],
     [
-      "q2",
-      "1",
+      "q2q4q0q2q1q2q0q4q1q4q0q1",
+      "c",
+      "q2q4q0q2q1q2q0q4q1q4q0q1"
+    ],
+    [
+      "q2q4q0q2q1q2q0q4q1q4q0q1",
+      "d",
       "q3"
     ],
     [
-      "q3",
-      "1",
-      "q4"
-    ],
-    [
-      "q4",
-      "1",
-      "q5"
-    ],
-    [
-      "q0",
-      "1",
-      "q1"
-    ],
-    [
-      "q5",
-      "1",
-      "q6"
-    ],
-    [
-      "q6",
-      "1",
-      "q7"
-    ],
-    [
-      "q7",
-      "1",
-      "q8"
-    ],
-    [
-      "q8",
-      "1",
-      "q9"
-    ],
-    [
-      "q9",
-      "1",
-      "q10"
+      "q2q4q0q2q1q2q0q4q1q4q0q1",
+      "b",
+      "q2q4q0q2q1q2q0q4q1q4q0q1"
     ]
   ],
   "Estados de aceptación": [
-    "q10"
+    "q3"
   ],
-  "Estado inicial": "q0"
+  "Estado inicial": "q2q4q0q2q1q2q0q4q1q4q0q1"
 }
